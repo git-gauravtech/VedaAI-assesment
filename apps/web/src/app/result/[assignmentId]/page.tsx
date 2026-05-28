@@ -13,6 +13,7 @@ interface Question {
   difficulty: 'easy' | 'medium' | 'hard';
   marks: number;
   type?: string;
+  options?: string[];
 }
 
 interface Section {
@@ -261,6 +262,16 @@ export default function ResultPage({ params }: { params: Promise<{ assignmentId:
                         <span className="text-gray-800">
                           [{q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}] {renderQuestionText(q.text)} [{q.marks} Marks]
                         </span>
+                        {q.options && q.options.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 ml-1">
+                            {q.options.map((opt, optIdx) => (
+                              <div key={optIdx} className="flex items-start gap-2 text-sm text-gray-700">
+                                <span className="font-semibold text-gray-900 shrink-0">{String.fromCharCode(65 + optIdx)})</span>
+                                <span>{opt}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

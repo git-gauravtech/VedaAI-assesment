@@ -55,6 +55,43 @@ export default function CreateAssignment() {
     return Object.keys(errors).length === 0;
   };
 
+  const [isListening, setIsListening] = useState(false);
+
+  const startListening = () => {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.');
+      return;
+    }
+    
+    // @ts-ignore
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setAdditionalInstructions(additionalInstructions ? additionalInstructions + ' ' + transcript : transcript);
+      setIsListening(false);
+    };
+    
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      setIsListening(false);
+    };
+    
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+    
+    recognition.start();
+  };
+
   const validateStep2 = () => {
     const errors: Record<string, string> = {};
     if (!dueDate) errors.dueDate = 'Due date is required';
@@ -343,12 +380,16 @@ export default function CreateAssignment() {
               <label className="block text-[13px] font-bold text-gray-800 mb-2">Additional Information (For better output)</label>
               <div className="relative">
                 <textarea 
-                  value={additionalInstructions}
+                  value={additionalInstructions || ''}
                   onChange={(e) => setAdditionalInstructions(e.target.value)}
                   placeholder="e.g Generate a question paper for 3 hour exam duration..."
                   className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:outline-none focus:border-gray-400 transition-colors text-[13px] h-28 resize-none bg-white/50"
                 ></textarea>
-                <button className="absolute bottom-4 right-4 text-gray-400 hover:text-gray-800">
+                <button 
+                  onClick={startListening}
+                  className={`absolute bottom-4 right-4 ${isListening ? 'text-orange-500 animate-pulse' : 'text-gray-400 hover:text-gray-800'}`}
+                  title="Click to speak"
+                >
                   <Mic size={18} />
                 </button>
               </div>
@@ -357,10 +398,10 @@ export default function CreateAssignment() {
         )}
       </div>
 
-      <div className="fixed bottom-[88px] lg:bottom-0 left-0 lg:left-[280px] right-0 bg-transparent p-6 flex justify-center gap-4 items-center z-20 max-w-4xl mx-auto lg:px-8 pointer-events-none">
+      <div className="mt-8 flex justify-center lg:justify-between items-center w-full gap-4">
         <button 
           onClick={handlePrevious}
-          className="pointer-events-auto px-5 lg:px-6 py-3 bg-white text-gray-800 font-bold rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all flex items-center gap-2 text-sm lg:text-base h-[48px]"
+          className="px-5 lg:px-6 py-3 bg-white text-gray-800 font-bold rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all flex items-center gap-2 text-sm lg:text-base h-[48px]"
         >
           <ArrowLeft size={18} strokeWidth={2.5} />
           Previous
@@ -368,7 +409,7 @@ export default function CreateAssignment() {
         <button 
           onClick={handleNext}
           disabled={isLoading}
-          className="pointer-events-auto px-8 lg:px-10 py-3 bg-[#1C1C1C] hover:bg-black text-white font-bold rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-sm lg:text-base h-[48px]"
+          className="px-8 lg:px-10 py-3 bg-[#1C1C1C] hover:bg-black text-white font-bold rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed text-sm lg:text-base h-[48px]"
         >
           {isLoading ? (
             <div className="flex items-center gap-2">

@@ -435,7 +435,7 @@ export default function AssignmentsPage() {
           {/* Create Assignment Button - Desktop: bottom center fixed, Mobile: above bottom nav */}
           <Link
             href="/create-assignment"
-            className="fixed bottom-[100px] lg:bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-1 bg-[#181818] hover:bg-black text-white rounded-[48px] transition-all z-40 whitespace-nowrap"
+            className="fixed bottom-[100px] lg:bottom-8 left-1/2 lg:left-[calc(50%+140px)] -translate-x-1/2 flex items-center justify-center gap-1 bg-[#181818] hover:bg-black text-white rounded-[48px] transition-all z-40 whitespace-nowrap"
             style={{
               width: '208px',
               height: '46px',

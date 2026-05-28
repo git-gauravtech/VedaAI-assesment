@@ -38,7 +38,17 @@ TOTAL_MARKS: 20
 
 SECTION: A
 INSTRUCTION: Answer all.
-Q1 | easy | 1 | Text
+Q1 | easy | 1 | What is the unit of force?
+OPTIONS: A) Joule | B) Newton | C) Watt | D) Pascal
+
+SECTION: B
+INSTRUCTION: Answer the following.
+Q2 | medium | 2 | Define acceleration.
+
+IMPORTANT RULES:
+- For MCQ questions, include an OPTIONS: line immediately after the question line with A), B), C), D) choices separated by |.
+- For Diagram/Graph questions, include <mermaid>...</mermaid> tags in the question text. Make sure all text labels inside Mermaid shapes are wrapped in double quotes, e.g. A["Text"] instead of A[Text], especially when containing parentheses or special characters.
+- For Short/Long/Numerical questions, no OPTIONS: line is needed.
 
 Malformed Text:
 ${malformedText}

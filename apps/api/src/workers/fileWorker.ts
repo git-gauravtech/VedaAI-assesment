@@ -10,7 +10,7 @@ if (typeof (global as any).ImageData === 'undefined') {
 if (typeof (global as any).Path2D === 'undefined') {
   (global as any).Path2D = class Path2D { };
 }
-const pdfParse = require('pdf-parse') as any;
+// Removed pdfParse require from top level
 import { Assignment } from '../models/Assignment';
 import { addGenerationJob } from '../services/queues/generationQueue';
 import { summarizeStudyMaterial } from '../services/ai/summarizer';
@@ -40,15 +40,22 @@ async function processFile(job: Job) {
     
     // 1. Extract Text
     if (mimeType === 'application/pdf') {
+      let pdfParse = require('pdf-parse');
+      if (typeof pdfParse !== 'function' && pdfParse && typeof pdfParse.default === 'function') {
+        pdfParse = pdfParse.default;
+      }
       const dataBuffer = fs.readFileSync(filePath);
-      const parseFunc = typeof pdfParse === 'function' ? pdfParse : pdfParse.default;
-      const data = await parseFunc(dataBuffer);
+      const data = await pdfParse(dataBuffer);
       rawText = data.text;
     } else if (mimeType === 'text/plain') {
       rawText = fs.readFileSync(filePath, 'utf8');
     } else if (mimeType === 'image/jpeg' || mimeType === 'image/png') {
-      const Tesseract = require('tesseract.js');
-      const { data: { text } } = await Tesseract.recognize(filePath, 'eng');
+      const tesseractModule = require('tesseract.js');
+      const recognizeFn = tesseractModule.recognize || (tesseractModule.default && tesseractModule.default.recognize);
+      if (!recognizeFn) {
+        throw new Error('Tesseract recognize function not found');
+      }
+      const { data: { text } } = await recognizeFn(filePath, 'eng');
       rawText = text;
     }
 

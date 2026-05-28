@@ -34,7 +34,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   // If on login or signup, render full page without layout wrappers
   if (isAuthPage) {
-    return <div className="h-full w-full">{children}</div>;
+    return <div className="h-full w-full overflow-y-auto">{children}</div>;
   }
 
   // Avoid flashing protected content before redirect

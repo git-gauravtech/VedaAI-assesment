@@ -15,6 +15,7 @@ export interface IGeneratedPaper extends Document {
       difficulty: 'easy' | 'medium' | 'hard';
       marks: number;
       type?: string;
+      options?: string[];
     }[];
   }[];
   rawProviderUsed: 'gemini' | 'groq' | 'mock';
@@ -36,7 +37,8 @@ const GeneratedPaperSchema: Schema = new Schema({
       text: { type: String, required: true },
       difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
       marks: { type: Number, required: true },
-      type: { type: String }
+      type: { type: String },
+      options: [{ type: String }]
     }]
   }],
   rawProviderUsed: { type: String, enum: ['gemini', 'groq', 'mock'], required: true }
