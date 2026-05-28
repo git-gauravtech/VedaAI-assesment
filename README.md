@@ -7,8 +7,8 @@ By leveraging cutting-edge LLM fallback protocols, real-time WebSocket streams, 
 ---
 
 ## 🔗 Production Deployed Links
-- **Frontend Application (Vercel)**: [https://vedaai-assessment-creator-web.vercel.app](https://vedaai-assessment-creator-web.vercel.app) *(Deploy URL placeholder)*
-- **Backend API Server (Render)**: [https://vedaai-api.onrender.com](https://vedaai-api.onrender.com) *(Deploy URL placeholder)*
+- **Frontend Application (Vercel)**: [https://veda-ai-assesment-web.vercel.app]
+- **Backend API Server (Render)**: [https://vedaai-backend-mvvp.onrender.com]
 
 ---
 
@@ -70,93 +70,8 @@ vedaai-assessment-creator/
 
 ---
 
-## 🛠 Local Development Setup
+## 🛠 Architecture plan
 
-To run VedaAI on your local machine, ensure you have **Node.js (v18+)** and **Redis Server** installed.
-
-### 1. Clone & Set Up Workspaces
-From the root of the project, install all workspace dependencies:
-```bash
-npm install
-```
-
-### 2. Configure Environment Variables
-
-Create an `.env` file inside `/apps/api/.env`:
-```env
-PORT=3001
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.example.mongodb.net/vedaai
-JWT_SECRET=your_super_secret_jwt_key
-REDIS_URL=redis://127.0.0.1:6379
-GEMINI_API_KEY=your_google_gemini_api_key
-GROQ_API_KEY=your_groq_api_key
-FRONTEND_URL=http://localhost:3000
-```
-
-Create an `.env.local` file inside `/apps/web/.env.local`:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001/api
-```
-
-### 3. Spin Up Local Services
-1. Ensure your local **Redis** instance is running:
-   ```bash
-   # Windows (via WSL or installed service)
-   redis-server
-   ```
-2. Start the Backend API (and background workers) in watch mode:
-   ```bash
-   cd apps/api
-   npm run dev
-   ```
-3. Start the Next.js Dev Server in another terminal:
-   ```bash
-   cd apps/web
-   npm run dev
-   ```
-4. Open your browser and navigate to `http://localhost:3000`.
-
----
-
-## 🚀 Production Deployment Blueprint
-
-Here is the exact setup recipe for deploying the desktop project to free cloud tiers.
-
-### Step 1: Initialize Git and Push to GitHub
-1. Create a blank repository on GitHub named `vedaai-assessment`. Do NOT initialize with a README or gitignore.
-2. In your local terminal, run the following to commit and push:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: implement resilient AI pipeline with custom DSL and worker queues"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_GITHUB_USERNAME/vedaai-assessment.git
-   git push -u origin main
-   ```
-
-### Step 2: Deploy Redis & Database
-1. **Database**: Spin up a free shared cluster on [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) and copy the connection string.
-2. **Redis Broker**: Spin up a free Redis database instance on [Upstash Redis](https://upstash.com) or [Render Redis](https://render.com). Copy the `rediss://...` connection URL.
-
-### Step 3: Deploy Backend to Render (Free)
-1. Sign in to [Render.com](https://render.com) using your GitHub account.
-2. Click **New +** and select **Web Service**.
-3. Link your GitHub repository.
-4. Input the following configurations:
-   *   **Name**: `vedaai-api`
-   *   **Root Directory**: `apps/api`
-   *   **Build Command**: `npm install && npm run build`
-   *   **Start Command**: `npm start`
-5. **Environment Variables**: Add all keys from your local `apps/api/.env` file. Be sure to link the production Redis URL (`REDIS_URL`) and MongoDB URI (`MONGO_URI`).
-6. Click **Create Web Service**. Once built, copy the server URL (e.g., `https://vedaai-api.onrender.com`).
-
-### Step 4: Deploy Frontend to Vercel (Free)
-1. Sign in to [Vercel.com](https://vercel.com) using your GitHub account.
-2. Click **Add New...** -> **Project**.
-3. Import your `vedaai-assessment` repository.
-4. Input the following configurations:
-   *   **Root Directory**: `apps/web`
-   *   **Framework Preset**: Next.js
-5. **Environment Variables**: Add a single variable:
+for architecture and flowdiagram of project just refer to the [Architecture Document](./ARCHITECTURE.md).
    *   `NEXT_PUBLIC_API_URL` = `https://vedaai-api.onrender.com/api` (Use the Render URL copied in Step 3)
 6. Click **Deploy**. Vercel will compile and launch the production application!
