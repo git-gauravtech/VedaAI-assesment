@@ -12,6 +12,13 @@ By leveraging cutting-edge LLM fallback protocols, real-time WebSocket streams, 
 
 ---
 
+---
+
+## 🛠 Architecture plan
+
+for architecture and flowdiagram of project just refer to the [Architecture Document](./architecture.md).
+
+---
 ## ✨ Key Premium Features
 
 *   **⚡ Async Worker Architecture**: Processes large documents and coordinates AI generation using a background message queue (BullMQ + Redis) to completely avoid HTTP request timeouts.
@@ -69,9 +76,3 @@ vedaai-assessment-creator/
 ```
 
 ---
-
-## 🛠 Architecture plan
-
-for architecture and flowdiagram of project just refer to the [Architecture Document](./ARCHITECTURE.md).
-   *   `NEXT_PUBLIC_API_URL` = `https://vedaai-api.onrender.com/api` (Use the Render URL copied in Step 3)
-6. Click **Deploy**. Vercel will compile and launch the production application!
