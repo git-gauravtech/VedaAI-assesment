@@ -62,21 +62,23 @@ export default function Topbar() {
   };
 
   if (!_hasHydrated) return null;
-
   return (
-    <div className="h-[60px] lg:h-[72px] bg-[#F3F4F6] lg:bg-white rounded-none lg:rounded-[24px] flex items-center justify-between px-4 lg:px-6 mb-2 lg:mb-4 shrink-0 shadow-none lg:shadow-sm print:hidden">
+    <div className="h-[56px] lg:h-[72px] bg-white lg:bg-white rounded-[16px] lg:rounded-[24px] flex items-center justify-between px-4 lg:px-6 mx-4 mt-3 lg:mx-0 lg:mt-0 mb-2 lg:mb-4 shrink-0 shadow-sm lg:shadow-sm print:hidden">
       {/* LEFT SIDE */}
       <div className="flex items-center gap-4">
         {/* Mobile Logo (Hidden on desktop) */}
         <div className="flex lg:hidden items-center gap-2">
-          <svg width="28" height="28" viewBox="19.7142 1.85519 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-            <rect x="19.7142" y="1.85519" width="40" height="40" rx="10" fill="url(#vedaBgTopbar)" />
-            <path fillRule="evenodd" clipRule="evenodd" d="M42.4413 30.2153C42.4413 30.2153 43.1688 32.1573 43.8355 32.2789H35.4112C33.7141 32.2789 32.1993 31.3079 31.714 29.487L26.805 14.9207C26.805 14.9207 26.381 13.1606 25.7143 12.8571H34.3204C36.0175 12.9179 37.1691 13.5247 37.8357 15.7706L42.4413 30.2153Z" fill="white" />
-            <path fillRule="evenodd" clipRule="evenodd" d="M37.0471 30.2149C37.0471 30.2149 36.3196 32.1569 35.6529 32.2784H44.0772C45.7743 32.2784 47.2891 31.3074 47.7744 29.4865L52.6231 14.9207C52.6231 14.9207 53.0471 13.1606 53.7138 12.8571H45.168C43.4709 12.8571 42.3801 13.464 41.7134 15.7098L37.0471 30.2149Z" fill="white" />
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+            <rect width="28" height="28" rx="7" fill="#303030"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M15.9091 19.8507C15.9091 19.8507 16.4184 21.2101 16.885 21.2952H10.988C9.80005 21.2952 8.7397 20.6155 8.40001 19.3409L4.96371 9.14449C4.96371 9.14449 4.66688 7.9124 4.2002 7.70001H10.2245C11.4125 7.74255 12.2185 8.16732 12.6852 9.73942L15.9091 19.8507Z" fill="white"/>
+            <path opacity="0.2" fillRule="evenodd" clipRule="evenodd" d="M15.9091 19.8507C15.9091 19.8507 16.4184 21.2101 16.885 21.2952H10.988C9.80005 21.2952 8.7397 20.6155 8.40001 19.3409L4.96371 9.14449C4.96371 9.14449 4.66688 7.9124 4.2002 7.70001H10.2245C11.4125 7.74255 12.2185 8.16732 12.6852 9.73942L15.9091 19.8507Z" fill="url(#paint0_linear_19_788)"/>
+            <path fillRule="evenodd" clipRule="evenodd" d="M12.1336 19.8509C12.1336 19.8509 11.6244 21.2103 11.1577 21.2954H17.0547C18.2427 21.2954 19.303 20.6157 19.6427 19.3411L23.0368 9.14497C23.0368 9.14497 23.3336 7.91289 23.8003 7.7005H17.8182C16.6303 7.7005 15.8668 8.12527 15.4001 9.69737L12.1336 19.8509Z" fill="white"/>
             <defs>
-              <linearGradient id="vedaBgTopbar" x1="39.7142" y1="1.85519" x2="39.7142" y2="41.8552">
-                <stop stopColor="#E56820" />
-                <stop offset="1" stopColor="#D45E3E" />
+              <linearGradient id="paint0_linear_19_788" x1="10.5426" y1="6.54428" x2="10.5426" y2="22.4936" gradientUnits="userSpaceOnUse">
+                <stop stopColor="white" stopOpacity="0"/>
+                <stop offset="0.33" stopColor="white" stopOpacity="0"/>
+                <stop offset="0.76" stopColor="#0E1513"/>
+                <stop offset="1" stopColor="#0E1513"/>
               </linearGradient>
             </defs>
           </svg>
@@ -108,9 +110,9 @@ export default function Topbar() {
 
       {/* RIGHT SIDE */}
       <div className="flex items-center gap-3 lg:gap-5">
-        <button className="w-10 h-10 flex lg:hidden items-center justify-center rounded-full bg-white transition-colors text-gray-600 relative">
+        <button className="w-10 h-10 flex lg:hidden items-center justify-center rounded-full bg-[#F0F2F5] transition-colors text-[#303030] relative">
           <Bell size={20} />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+          <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white"></span>
         </button>
 
         <button className="hidden lg:flex w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-600 relative">
@@ -121,7 +123,7 @@ export default function Topbar() {
         <div className="relative" id="topbar-user-menu">
           <div
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex min-h-[40px] lg:min-h-[44px] min-w-fit max-w-[260px] items-center gap-2 rounded-full lg:rounded-[12px] px-1 lg:px-3 py-1 lg:py-[6px] cursor-pointer transition-colors hover:bg-gray-50 bg-white lg:bg-transparent lg:shadow-[0px_16px_48px_rgba(0,0,0,0.12),0px_32px_48px_rgba(0,0,0,0.2)]"
+            className="flex min-h-[40px] lg:min-h-[44px] min-w-fit max-w-[260px] items-center gap-2 rounded-full lg:rounded-[12px] px-0 lg:px-3 py-0 lg:py-[6px] cursor-pointer transition-colors lg:hover:bg-gray-50 bg-transparent lg:bg-transparent lg:shadow-[0px_16px_48px_rgba(0,0,0,0.12),0px_32px_48px_rgba(0,0,0,0.2)]"
           >
             {/* Avatar */}
             <div className="w-8 h-8 rounded-full overflow-hidden bg-[#F6F6F6] flex items-center justify-center shrink-0">
@@ -142,7 +144,7 @@ export default function Topbar() {
 
             {/* Hamburger (Mobile only) */}
             <div className="flex lg:hidden items-center justify-center px-1">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#303030]">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
                 <line x1="3" y1="6" x2="21" y2="6"></line>
                 <line x1="3" y1="18" x2="21" y2="18"></line>
