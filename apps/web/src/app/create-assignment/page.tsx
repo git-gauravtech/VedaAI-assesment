@@ -290,31 +290,32 @@ export default function CreateAssignment() {
             <div>
               <div 
                 {...getRootProps()} 
-                className={`border-2 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer bg-white ${isDragActive ? 'border-gray-500 bg-gray-50' : 'border-gray-300 hover:border-gray-400'}`}
+                className={`border-3 border-dashed rounded-3xl p-10 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer bg-white ${isDragActive ? 'border-gray-500 bg-gray-50' : 'border-gray-300 hover:border-gray-400'}`}
               >
                 <input {...getInputProps()} />
-                <UploadCloud size={28} className="text-gray-800 mb-4" />
-                <p className="text-[15px] font-semibold text-gray-900 mb-1">
+                <UploadCloud size={30} className="text-gray-800 mb-4" />
+                <p className="text-[16px] font-semibold text-gray-900 mb-1">
                   {file ? file.name : 'Choose a file or drag & drop it here'}
                 </p>
                 <p className="text-xs text-gray-400 mb-6">
                   {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : 'JPEG, PNG, up to 10MB'}
                 </p>
-                <button type="button" className="px-6 py-2 bg-gray-50 border border-gray-200 rounded-full text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors">
+                <button type="button" className="px-6 py-2 bg-gray-200 border border-gray-200 rounded-full text-xs font-semibold text-[black] hover:bg-gray-100 transition-colors">
                   {file ? 'Change File' : 'Browse Files'}
                 </button>
               </div>
-              <p className="text-center text-xs text-gray-400 mt-3 font-medium">Upload images of your preferred document/image</p>
+              <p className="text-center text-[14px] text-[rgb(0,0,0,0.7)] mt-3 font-Regular">Upload images of your preferred document/image</p>
             </div>
 
             <div>
-              <label className="block text-[13px] font-bold text-gray-800 mb-2">Due Date</label>
+              <label className="block text-[13px] font-bold text-black mb-2">Due Date</label>
               <div className="relative">
                 <input 
                   type="date" 
+                  placeholder="DD-MM-YYY"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className={`w-full px-5 py-4 rounded-xl border ${validationErrors.dueDate ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:border-gray-400 transition-colors text-[13px] bg-white`}
+                  className={`w-full px-5 py-4 rounded-3xl border ${validationErrors.dueDate ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:border-gray-400 transition-colors text-[13px] bg-white`}
                 />
                 {validationErrors.dueDate && <p className="text-red-500 text-xs mt-1.5">{validationErrors.dueDate}</p>}
               </div>
@@ -322,10 +323,10 @@ export default function CreateAssignment() {
 
             <div>
               <div className="flex items-center justify-between mb-4 px-1">
-                <label className="text-[13px] font-bold text-gray-800">Question Type</label>
-                <div className="flex gap-12 text-[13px] font-bold text-gray-800">
+                <label className="text-[14px] font-extrabold text-black">Question Type</label>
+                <div className="flex gap-11 text-[14px] font-semibold text-black">
                   <span>No. of Questions</span>
-                  <span className="w-16">Marks</span>
+                  <span className="w-13">Marks</span>
                 </div>
               </div>
 
@@ -336,7 +337,7 @@ export default function CreateAssignment() {
                       <select 
                         value={qt.type}
                         onChange={(e) => updateQuestionType(qt.id, 'type', e.target.value)}
-                        className={`w-full px-5 py-4 rounded-xl border ${validationErrors[`qt-${index}`] ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:border-gray-400 transition-colors text-[13px] font-medium bg-white appearance-none`}
+                        className={`w-full px-5 py-4 rounded-3xl border ${validationErrors[`qt-${index}`] ? 'border-red-500' : 'border-gray-200'} focus:outline-none focus:border-gray-400 transition-colors text-[13px] font-medium bg-white appearance-none`}
                       >
                         <option value="Multiple Choice Questions">Multiple Choice Questions</option>
                         <option value="Short Questions">Short Questions</option>
@@ -345,17 +346,17 @@ export default function CreateAssignment() {
                         <option value="Long Answer Questions">Long Answer Questions</option>
                       </select>
                     </div>
-                    <button onClick={() => removeQuestionType(qt.id)} className="text-gray-400 hover:text-gray-900 transition-colors">
+                    <button onClick={() => removeQuestionType(qt.id)} className="text-blck hover:text-gray-900 transition-colors">
                       <X size={16} />
                     </button>
                     <div className="flex items-center bg-white border border-gray-200 rounded-full px-1 py-1 w-[120px] justify-between">
                       <button onClick={() => updateQuestionType(qt.id, 'count', Math.max(1, qt.count - 1))} className="p-2 text-gray-400 hover:text-gray-900 transition-colors"><Minus size={14} /></button>
-                      <span className="text-[13px] font-bold text-gray-800">{qt.count}</span>
+                      <span className="text-[14px] font-bold text-black">{qt.count}</span>
                       <button onClick={() => updateQuestionType(qt.id, 'count', qt.count + 1)} className="p-2 text-gray-400 hover:text-gray-900 transition-colors"><Plus size={14} /></button>
                     </div>
                     <div className="flex items-center bg-white border border-gray-200 rounded-full px-1 py-1 w-[100px] justify-between">
                       <button onClick={() => updateQuestionType(qt.id, 'marks', Math.max(1, qt.marks - 1))} className="p-2 text-gray-400 hover:text-gray-900 transition-colors"><Minus size={14} /></button>
-                      <span className="text-[13px] font-bold text-gray-800">{qt.marks}</span>
+                      <span className="text-[14px] font-bold text-black">{qt.marks}</span>
                       <button onClick={() => updateQuestionType(qt.id, 'marks', qt.marks + 1)} className="p-2 text-gray-400 hover:text-gray-900 transition-colors"><Plus size={14} /></button>
                     </div>
                   </div>
@@ -363,27 +364,27 @@ export default function CreateAssignment() {
               </div>
               {validationErrors.questionTypes && <p className="text-red-500 text-xs mt-2">{validationErrors.questionTypes}</p>}
 
-              <button onClick={addQuestionType} className="flex items-center gap-3 text-[13px] font-bold text-gray-800 mt-6 hover:text-black transition-colors">
+              <button onClick={addQuestionType} className="flex items-center gap-3 text-[14px] font-bold text-black mt-6 hover:text-gray-800 transition-colors">
                 <div className="w-6 h-6 rounded-full bg-gray-800 text-white flex items-center justify-center">
                   <Plus size={14} />
                 </div>
                 Add Question Type
               </button>
               
-              <div className="flex flex-col items-end mt-4 text-[13px] text-gray-700 space-y-1 font-medium">
+              <div className="flex flex-col items-end mt-4 text-[14px] text-black space-y-1 font-medium">
                 <div>Total Questions : <span className="font-bold">{totalQuestions}</span></div>
                 <div>Total Marks : <span className="font-bold">{totalMarks}</span></div>
               </div>
             </div>
 
             <div className="pt-2">
-              <label className="block text-[13px] font-bold text-gray-800 mb-2">Additional Information (For better output)</label>
+              <label className="block text-[14px] font-extrabold text-black mb-2">Additional Information (For better output)</label>
               <div className="relative">
                 <textarea 
                   value={additionalInstructions || ''}
                   onChange={(e) => setAdditionalInstructions(e.target.value)}
                   placeholder="e.g Generate a question paper for 3 hour exam duration..."
-                  className="w-full px-5 py-4 rounded-xl border border-gray-200 focus:outline-none focus:border-gray-400 transition-colors text-[13px] h-28 resize-none bg-white/50"
+                  className="w-full px-5 py-4 border-2 border-dashed rounded-3xl border border-gray-200 focus:outline-none focus:border-gray-400 transition-colors text-[13px] h-28 resize-none bg-white/50"
                 ></textarea>
                 <button 
                   onClick={startListening}
