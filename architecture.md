@@ -57,36 +57,37 @@ graph TD
     end
 
     %% Workflow Edges
-    User -->|Configures Quiz / Uploads File| UI
-    UI -->|1. Submit HTTP Request| Routes
-    Routes -->|2. Create DB Record (Pending)| MongoDB
-    Routes -->|3. Push Job to Queue| BullMQ
-    Routes -->|4. Return 202 Accepted| UI
+    User -->|"Configures Quiz / Uploads File"| UI
+    UI -->|"1. Submit HTTP Request"| Routes
+    Routes -->|"2. Create DB Record (Pending)"| MongoDB
+    Routes -->|"3. Push Job to Queue"| BullMQ
+    Routes -->|"4. Return 202 Accepted"| UI
     
-    UI -->|5. Subscribe to Progress Room| Sockets
+    UI -->|"5. Subscribe to Progress Room"| Sockets
     
-    BullMQ -->|6. Dispatch Jobs| Redis
-    Redis <-->|Fetch/Update Job State| Workers
+    BullMQ -->|"6. Dispatch Jobs"| Redis
+    Redis <-->|"Fetch / Update Job State"| FileWorker
+    Redis <-->|"Fetch / Update Job State"| GenWorker
     
-    FileWorker -->|Extract Text & Summary| GenWorker
-    GenWorker -->|7. Generate DSL Prompt| AI
+    FileWorker -->|"Extract Text & Summary"| GenWorker
+    GenWorker -->|"7. Generate DSL Prompt"| Gemini
     
-    Gemini -->|Success: Raw DSL| GenWorker
-    Gemini -.->|503 Failover| Groq
-    Groq -->|Fallback DSL| GenWorker
+    Gemini -->|"Success: Raw DSL"| GenWorker
+    Gemini -.->|"503 Failover"| Groq
+    Groq -->|"Fallback DSL"| GenWorker
     
-    GenWorker -->|8. Parse DSL| GenWorker
-    GenWorker -->|9. DSL Parse Fail -> Repair Prompt| RepairAI
-    RepairAI -->|Fixed DSL| GenWorker
+    GenWorker -->|"8. Parse DSL"| GenWorker
+    GenWorker -->|"9. DSL Parse Fail then Repair"| RepairAI
+    RepairAI -->|"Fixed DSL"| GenWorker
     
-    GenWorker -->|10. Store GeneratedPaper| MongoDB
-    GenWorker -->|11. Trigger Progress Updates| Sockets
+    GenWorker -->|"10. Store GeneratedPaper"| MongoDB
+    GenWorker -->|"11. Trigger Progress Updates"| Sockets
     
-    Sockets -->|12. Real-Time Status Events| SocketClient
-    SocketClient -->|Update UI to Ready| UI
-    UI -->|Render Flowcharts & MCQs| MermaidRender
-    UI -->|Download Assessment| PDFGen
-    PDFGen -->|Deliver Branded PDF| User
+    Sockets -->|"12. Real-Time Status Events"| SocketClient
+    SocketClient -->|"Update UI to Ready"| UI
+    UI -->|"Render Flowcharts & MCQs"| MermaidRender
+    UI -->|"Download Assessment"| PDFGen
+    PDFGen -->|"Deliver Branded PDF"| User
 ```
 
 ---
