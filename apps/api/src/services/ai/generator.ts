@@ -14,10 +14,12 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const groq = new Groq({ apiKey: GROQ_API_KEY });
 
 function buildPrompt(assignment: IAssignment): string {
-  const studyContext = assignment.uploadedFile?.compressedSummary || 
-                       assignment.uploadedFile?.extractedText?.slice(0, 4000) || '';
-  
-  let prompt = `You are an expert exam creator. Generate a structured question paper based on the following details.
+  const studyContext =
+    assignment.uploadedFile?.compressedSummary ||
+    assignment.uploadedFile?.extractedText?.slice(0, 4000) ||
+    '';
+
+  let prompt = `You are an expert exam creator who creates exam papers that truly test students' understanding and ability. Generate a structured question paper based on the following details.
 
 Subject: ${assignment.subject}
 Title: ${assignment.title}
@@ -38,7 +40,9 @@ Additional Instructions: ${assignment.additionalInstructions}
 
   prompt += `
 CRITICAL INSTRUCTION:
-Do NOT return JSON. Do NOT return markdown formatting.
+Do NOT return JSON.
+Do NOT return markdown formatting.
+Do NOT wrap output in code blocks.
 Return the output EXACTLY in this compact DSL format:
 
 PAPER_TITLE: <title>
@@ -64,13 +68,63 @@ RULES FOR SPECIFIC QUESTION TYPES:
    OPTIONS: A) Joule | B) Newton | C) Watt | D) Pascal
 
 2. **Diagram/Graph-Based Questions:**
-   Every Diagram/Graph-Based question MUST include a Mermaid.js diagram inside <mermaid>...</mermaid> tags directly in the question text.
-   The diagram must be relevant and meaningful to the question being asked.
-   Use valid Mermaid.js syntax (flowcharts, pie charts, graphs, class diagrams, etc.).
-   Do NOT skip the diagram. Do NOT use placeholder text instead of a diagram.
-   CRITICAL MERMAID SYNTAX RULE: Always wrap node text labels inside Mermaid shapes in double quotes. For example, use A["Battery 12V"] instead of A[Battery 12V], and D["Voting Classifier (Soft Voting)"] instead of D[Voting Classifier (Soft Voting)]. Never put raw parentheses or special characters inside labels without enclosing the entire label text in double quotes. This prevents parser render errors.
+   Every Diagram/Graph-Based question MUST include one Mermaid.js diagram inside <mermaid>...</mermaid> tags directly in the question text.
+   The diagram must be relevant and meaningful to the uploaded study material and the question.
+   Do NOT skip the diagram.
+   Do NOT use placeholder text instead of a diagram.
+   Do NOT include more than one Mermaid diagram in a single question.
+
+   CRITICAL MERMAID SAFETY RULES:
+   - The Mermaid code must be valid and renderable by Mermaid.js.
+   - Prefer simple graph/flowchart diagrams because they are safest.
+   - Use graph LR; or flowchart LR; for most diagrams.
+   - Use sequenceDiagram only when the question is about communication, request flow, process interaction, or networking.
+   - Use classDiagram only when the question is specifically about OOP/classes/entities/relationships.
+   - If you are uncertain which diagram type is valid, always use graph LR;.
+   - Never invent Mermaid syntax.
+   - Do NOT use markdown code fences inside <mermaid> tags.
+   - Do NOT use escaped newline characters like \\n inside Mermaid code.
+   - Keep the Mermaid diagram on one line.
+   - Do NOT use semicolons inside labels.
+   - Do NOT use the pipe character | inside Mermaid labels because | is used by the DSL parser.
+   - Do NOT use double quotes inside labels except the outer label quotes.
+   - Avoid curly braces unless Mermaid syntax requires them.
+
+   SAFE GRAPH/FLOWCHART RULES:
+   - Use node IDs like A, B, C, D, E.
+   - Always wrap visible node text in double quotes.
+   - Correct: A["Population"] --> B["Random sample"]
+   - Wrong: A[Population (Group A)] --> B[Sample]
+   - If label text has parentheses, symbols, commas, or special characters, keep the entire label inside double quotes.
+   - Example:
+   <mermaid>graph LR; A["Population"] --> B["Sampling method"]; B --> C["Selected sample"]; C --> D["Possible limitation: under-representation"];</mermaid>
+
+   CLASS DIAGRAM RULES:
+   - Use classDiagram only for real class/entity relationship questions.
+   - Class names must be single identifiers without spaces.
+   - Correct: class SimpleRandomSampling
+   - Wrong: class "Simple Random Sampling"
+   - Do NOT put long descriptions as class attributes.
+   - Do NOT use quoted class names.
+   - Do NOT use invalid custom fields like -description: "text".
+   - Prefer relationships only.
+   - Example:
+   <mermaid>classDiagram; class Teacher; class Assignment; class Question; Teacher --> Assignment; Assignment --> Question;</mermaid>
+
+   SEQUENCE DIAGRAM RULES:
+   - Use sequenceDiagram only for step-by-step interaction questions.
+   - Use simple participant names without special characters.
+   - Example:
+   <mermaid>sequenceDiagram; participant Student; participant System; Student->>System: Upload file; System->>System: Extract text; System-->>Student: Show generated paper;</mermaid>
+
+   PIE CHART RULES:
+   - Use pie chart only for percentage/proportion questions.
+   - Do NOT use pie charts if exact Mermaid syntax is uncertain.
+   - Example:
+   <mermaid>pie title Question Type Distribution; "MCQ" : 40; "Short Answer" : 35; "Long Answer" : 25;</mermaid>
+
    Example:
-   Q5 | medium | 5 | Study the following circuit diagram and answer: What is the total resistance? <mermaid>graph LR; A["Battery 12V"] --> B["R1 = 4Ω"]; B --> C["R2 = 6Ω"]; C --> A;</mermaid>
+   Q5 | medium | 5 | Study the following circuit diagram and answer: What is the total resistance? <mermaid>graph LR; A["Battery 12V"] --> B["R1 = 4 ohm"]; B --> C["R2 = 6 ohm"]; C --> A;</mermaid>
 
 3. **All Other Question Types (Short, Long, Numerical):**
    These do not need OPTIONS: or <mermaid> tags. Just provide the question text.
@@ -95,7 +149,7 @@ Q4 | medium | 2 | What is the difference between mass and weight?
 
 SECTION: C
 INSTRUCTION: Study the diagrams and answer the questions.
-Q5 | hard | 5 | Observe the following circuit and calculate the total resistance when R1 and R2 are connected in series. <mermaid>graph LR; A["Battery"] --> B["R1 = 3Ω"]; B --> C["R2 = 7Ω"]; C --> A;</mermaid>
+Q5 | hard | 5 | Observe the following circuit and calculate the total resistance when R1 and R2 are connected in series. <mermaid>graph LR; A["Battery"] --> B["R1 = 3 ohm"]; B --> C["R2 = 7 ohm"]; C --> A;</mermaid>
 `;
 
   return prompt;
