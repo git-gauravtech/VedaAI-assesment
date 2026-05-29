@@ -92,7 +92,7 @@ export default function BottomNav() {
   const navItems = [
     {
       name: 'Home',
-      href: '/home',
+      href: '/',
       icon: HomeIcon,
     },
     {
@@ -102,12 +102,12 @@ export default function BottomNav() {
     },
     {
       name: 'Library',
-      href: '/library',
+      href: '/',
       icon: FileIcon,
     },
     {
       name: 'AI Toolkit',
-      href: '/toolkit',
+      href: '/',
       icon: ToolkitIcon,
     },
   ];

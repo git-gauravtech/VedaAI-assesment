@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { io } from 'socket.io-client';
 import { CheckCircle2, Circle, Loader2, Sparkles } from 'lucide-react';
 import { use } from 'react';
+import { useAuthStore } from '@/store/authStore';
 
 const steps = [
   { id: 'generation:processing', label: 'Processing Request' },
@@ -19,24 +20,44 @@ const steps = [
 export default function GeneratingPage({ params }: { params: Promise<{ assignmentId: string }> }) {
   const router = useRouter();
   const { assignmentId } = use(params);
+  const { token } = useAuthStore();
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
+  const hasRedirected = useRef(false);
 
+  const redirectToResult = () => {
+    if (hasRedirected.current) return;
+    hasRedirected.current = true;
+    router.push(`/result/${assignmentId}`);
+  };
+
+  // Socket-based real-time updates
   useEffect(() => {
-    const socket = io('http://localhost:3001');
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+    // Socket needs the base URL without /api path
+    const socketUrl = apiUrl.replace(/\/api\/?$/, '');
+
+    const socket = io(socketUrl, {
+      transports: ['websocket', 'polling'],
+      reconnectionAttempts: 5,
+      timeout: 10000,
+    });
 
     socket.on('connect', () => {
+      console.log('Socket connected for assignment:', assignmentId);
       socket.emit('join-assignment-room', assignmentId);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.warn('Socket connection error:', err.message);
     });
 
     steps.forEach((step, index) => {
       socket.on(step.id, () => {
         setCurrentStepIndex(index);
-        
+
         if (step.id === 'generation:completed') {
-          setTimeout(() => {
-            router.push(`/result/${assignmentId}`);
-          }, 1000);
+          setTimeout(redirectToResult, 1000);
         }
       });
     });
@@ -48,7 +69,39 @@ export default function GeneratingPage({ params }: { params: Promise<{ assignmen
     return () => {
       socket.disconnect();
     };
-  }, [assignmentId, router]);
+  }, [assignmentId]);
+
+  // Polling fallback — checks assignment status every 5 seconds
+  // This ensures redirect works even if socket connection fails
+  useEffect(() => {
+    if (!token) return;
+
+    const pollInterval = setInterval(async () => {
+      if (hasRedirected.current) return;
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/assignments/${assignmentId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === 'completed') {
+            setCurrentStepIndex(steps.length - 1);
+            setTimeout(redirectToResult, 1000);
+          } else if (data.status === 'failed') {
+            setError('Generation failed. Please try again.');
+            clearInterval(pollInterval);
+          }
+        }
+      } catch {
+        // Silently ignore polling errors — socket might still work
+      }
+    }, 5000);
+
+    return () => clearInterval(pollInterval);
+  }, [assignmentId, token]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
@@ -79,7 +132,6 @@ export default function GeneratingPage({ params }: { params: Promise<{ assignmen
             {steps.map((step, index) => {
               const isCompleted = index < currentStepIndex;
               const isCurrent = index === currentStepIndex;
-              const isUpcoming = index > currentStepIndex;
 
               return (
                 <div key={step.id} className="flex items-center gap-4">
@@ -104,3 +156,4 @@ export default function GeneratingPage({ params }: { params: Promise<{ assignmen
     </div>
   );
 }
+
