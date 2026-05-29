@@ -197,18 +197,18 @@ export default function AssignmentsPage() {
       style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
     >
       {assignments.length === 0 ? (
-        <div className="flex flex-col justify-center items-center gap-8 mx-auto w-[486px] min-h-[678px]">
-          <div className="flex flex-col items-center gap-3 w-[486px]">
-            <div className="w-[300px] h-[300px]">
+        <div className="flex flex-col justify-center items-center gap-8 mx-auto w-full max-w-[486px] min-h-[calc(100vh-200px)] px-4">
+          <div className="flex flex-col items-center gap-3 w-full">
+            <div className="w-full max-w-[300px] aspect-square flex items-center justify-center">
               <EmptyAssignmentsSvg />
             </div>
 
-            <div className="flex flex-col justify-center items-center gap-0.5 w-[486px] h-[96px]">
+            <div className="flex flex-col justify-center items-center gap-2 w-full">
               <h2 className="text-[20px] font-bold leading-[140%] tracking-[-0.04em] text-[#303030] text-center">
                 No assignments yet
               </h2>
 
-              <p className="w-[486px] text-[16px] font-normal leading-[140%] tracking-[-0.04em] text-center text-[rgba(94,94,94,0.8)]">
+              <p className="w-full text-[16px] font-normal leading-[140%] tracking-[-0.04em] text-center text-[rgba(94,94,94,0.8)]">
                 Create your first assignment to start collecting and grading student
                 submissions. You can set up rubrics, define marking criteria, and let AI
                 assist with grading.
@@ -225,7 +225,8 @@ export default function AssignmentsPage() {
     items-center
     justify-center
     gap-1
-    w-[277px]
+    w-full
+    max-w-[277px]
     h-[46px]
     px-6
     py-3
@@ -268,10 +269,9 @@ export default function AssignmentsPage() {
           {/* Mobile FAB */}
           <Link
             href="/create-assignment"
-            className="fixed bottom-[100px] left-1/2 -translate-x-1/2 px-6 py-3.5 bg-[#1C1C1C] text-white rounded-full flex items-center justify-center gap-2 shadow-[0_8px_30px_rgba(0,0,0,0.12)] lg:hidden z-40 hover:bg-black transition-colors whitespace-nowrap"
+            className="flex lg:hidden fixed bottom-[100px] right-6 w-[56px] h-[56px] bg-white rounded-full items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-40 transition-transform active:scale-95 border border-gray-100"
           >
-            <Plus size={20} className="text-white" />
-            <span className="font-bold text-[15px]">Create Assignment</span>
+            <Plus size={28} className="text-[#FF5000]" strokeWidth={2.5} />
           </Link>
         </div>
       ) : (
@@ -408,21 +408,21 @@ export default function AssignmentsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between w-full h-[19px] gap-6">
-                    <div className="flex items-center gap-[4px] whitespace-nowrap">
-                      <span className="text-[16px] font-extrabold leading-[120%] tracking-[-0.04em] text-[#303030]">
+                  <div className="flex items-center justify-between w-full h-auto sm:h-[19px] gap-2 sm:gap-6">
+                    <div className="flex items-center gap-1 sm:gap-[4px] whitespace-nowrap">
+                      <span className="text-[13px] sm:text-[16px] font-extrabold leading-[120%] tracking-[-0.04em] text-[#303030]">
                         Assigned on :
                       </span>
-                      <span className="text-[16px] font-normal leading-[120%] tracking-[-0.04em] text-[rgba(0,0,0,0.5)]">
+                      <span className="text-[13px] sm:text-[16px] font-normal leading-[120%] tracking-[-0.04em] text-[rgba(0,0,0,0.5)]">
                         {formatDate(assignment.createdAt)}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-[4px] whitespace-nowrap">
-                      <span className="text-[16px] font-extrabold leading-[120%] tracking-[-0.04em] text-[#303030]">
+                    <div className="flex items-center gap-1 sm:gap-[4px] whitespace-nowrap">
+                      <span className="text-[13px] sm:text-[16px] font-extrabold leading-[120%] tracking-[-0.04em] text-[#303030]">
                         Due :
                       </span>
-                      <span className="text-[16px] font-normal leading-[120%] tracking-[-0.04em] text-[rgba(0,0,0,0.5)]">
+                      <span className="text-[13px] sm:text-[16px] font-normal leading-[120%] tracking-[-0.04em] text-[rgba(0,0,0,0.5)]">
                         {formatDate(assignment.dueDate)}
                       </span>
                     </div>
@@ -432,10 +432,10 @@ export default function AssignmentsPage() {
             ))}
           </div>
 
-          {/* Create Assignment Button - Desktop: bottom center fixed, Mobile: above bottom nav */}
+          {/* Create Assignment Button - Desktop */}
           <Link
             href="/create-assignment"
-            className="fixed bottom-[100px] lg:bottom-8 left-1/2 lg:left-[calc(50%+140px)] -translate-x-1/2 flex items-center justify-center gap-1 bg-[#181818] hover:bg-black text-white rounded-[48px] transition-all z-40 whitespace-nowrap"
+            className="hidden lg:flex fixed bottom-8 left-[calc(50%+140px)] -translate-x-1/2 items-center justify-center gap-1 bg-[#181818] hover:bg-black text-white rounded-[48px] transition-all z-40 whitespace-nowrap"
             style={{
               width: '208px',
               height: '46px',
@@ -467,6 +467,14 @@ export default function AssignmentsPage() {
             <span className="text-[16px] font-medium leading-[140%] tracking-[-0.04em] text-white text-center">
               Create Assignment
             </span>
+          </Link>
+
+          {/* Create Assignment Button - Mobile FAB */}
+          <Link
+            href="/create-assignment"
+            className="flex lg:hidden fixed bottom-[100px] right-6 w-[56px] h-[56px] bg-white rounded-full items-center justify-center shadow-[0_8px_30px_rgba(0,0,0,0.12)] z-40 transition-transform active:scale-95 border border-gray-100"
+          >
+            <Plus size={28} className="text-[#FF5000]" strokeWidth={2.5} />
           </Link>
         </>
       )}

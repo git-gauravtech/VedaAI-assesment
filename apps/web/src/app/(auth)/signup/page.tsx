@@ -147,7 +147,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] flex flex-col py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F3F4F6] flex flex-col py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md mt-auto">
         <div className="flex justify-center mb-8">
           <VedaAILogo />
@@ -156,7 +156,7 @@ export default function SignupPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md mb-auto">
-        <div className="bg-white py-10 px-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-[24px] sm:px-10 border border-gray-100">
+        <div className="bg-white py-10 px-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl sm:rounded-[24px] sm:px-10 border border-gray-100">
           {error && (
             <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium">
               {error}

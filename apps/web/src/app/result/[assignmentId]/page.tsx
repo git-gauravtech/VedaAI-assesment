@@ -161,7 +161,24 @@ export default function ResultPage({ params }: { params: Promise<{ assignmentId:
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 pb-24">
+    <div className="max-w-4xl mx-auto px-4 py-6 pb-24 print:m-0 print:p-0 print:max-w-none print:w-full print:block">
+      <style>{`
+        @media print {
+          @page {
+            /* Margins: Top Right Bottom Left */
+            margin: 20mm 15mm 20mm 15mm !important;
+          }
+          body {
+            background-color: white !important;
+            -webkit-print-color-adjust: exact;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          * {
+            color: black !important;
+          }
+        }
+      `}</style>
       {/* Top Banner */}
       <div className="bg-[#2A2A2A] rounded-[20px] p-6 mb-8 print:hidden">
         <p className="text-white text-[20px] font-bold leading-relaxed mb-5">
@@ -215,57 +232,57 @@ export default function ResultPage({ params }: { params: Promise<{ assignmentId:
 
       {/* Question Paper */}
       <div className="bg-white rounded-[20px] shadow-sm border border-gray-200 overflow-hidden print:overflow-visible print:shadow-none print:border-0 print:rounded-none">
-        <div className="px-10 py-10 md:px-16 md:py-14">
+        <div className="px-10 py-10 md:px-16 md:py-14 print:p-0">
           
           {/* Paper Header */}
           <div className="text-center mb-8 pb-6">
-            <h1 className="font-[family-name:var(--font-bricolage)] text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">
+            <h1 className="font-[family-name:var(--font-bricolage)] text-2xl font-extrabold text-black mb-1 tracking-tight">
               {user?.schoolName || 'School Name'}{user?.city ? `, ${user.city}` : ', Location'}
             </h1>
-            <p className="text-sm font-semibold text-gray-700 mb-0.5">Subject: {paper.subject}</p>
-            <p className="text-sm font-semibold text-gray-700">Class: {assignment?.grade || paper.grade || ''}</p>
+            <p className="text-[24px] font-bold text-black mb-0.5">Subject: {paper.subject}</p>
+            <p className="text-[24px] font-bold text-black">Class: {assignment?.grade || paper.grade || ''}</p>
           </div>
 
           {/* Time and Marks Row */}
-          <div className="flex justify-between items-center mb-6 text-sm font-semibold text-gray-800">
+          <div className="flex justify-between items-center mb-6 text-[18px] font-bold text-black">
             <span>Time Allowed: {paper.duration}</span>
             <span>Maximum Marks: {paper.totalMarks}</span>
           </div>
 
           {/* General Instructions */}
-          <div className="mb-6 text-sm text-gray-700">
-            <p className="font-semibold">All questions are compulsory unless stated otherwise.</p>
+          <div className="mb-6 text-sm text-black">
+            <p className="font-bold">All questions are compulsory unless stated otherwise.</p>
           </div>
 
           {/* Student Info Fields */}
-          <div className="mb-10 text-sm text-gray-800 space-y-2">
-            <p>Name: ____________________</p>
-            <p>Roll Number: ____________________</p>
-            <p>Class: {assignment?.grade || paper.grade || '___'} Section: _________</p>
+          <div className="mb-10 text-sm text-black space-y-2">
+            <p className="font-semibold">Name: ____________________</p>
+            <p className="font-semibold">Roll Number: ____________________</p>
+            <p className="font-semibold">Class: {assignment?.grade || paper.grade || '___'} Section: _________</p>
           </div>
 
           {/* Sections */}
           <div className="space-y-10">
             {paper.sections.map((section, sIndex) => (
               <div key={sIndex}>
-                <h2 className="font-[family-name:var(--font-bricolage)] text-center text-lg font-bold text-gray-900 mb-4">
+                <h2 className="font-[family-name:var(--font-bricolage)] text-center text-[24px] font-bold text-black mb-4">
                   {section.title}
                 </h2>
-                <p className="text-sm font-semibold text-gray-700 mb-1">{getSectionQuestionType(section, assignment)}</p>
-                <p className="text-sm italic text-gray-600 mb-6">{section.instruction}</p>
+                <p className="text-sm font-semibold text-black mb-1">{getSectionQuestionType(section, assignment)}</p>
+                <p className="text-[16px] italic text-black mb-6">{section.instruction}</p>
                 
                 <div className="space-y-5">
                   {section.questions.map((q, qIndex) => (
                     <div key={qIndex} className="flex gap-3 text-sm leading-relaxed">
                       <span className="font-semibold text-gray-900 shrink-0">{q.questionNumber}.</span>
                       <div className="flex-1">
-                        <span className="text-gray-800">
+                        <span className="text-[rgb(48,48,48,1)]">
                           [{q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}] {renderQuestionText(q.text)} [{q.marks} Marks]
                         </span>
                         {q.options && q.options.length > 0 && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 ml-1">
                             {q.options.map((opt, optIdx) => (
-                              <div key={optIdx} className="flex items-start gap-2 text-sm text-gray-700">
+                              <div key={optIdx} className="flex items-start gap-2 text-sm text-[rgb(48,48,48,1)]">
                                 <span className="font-semibold text-gray-900 shrink-0">{String.fromCharCode(65 + optIdx)})</span>
                                 <span>{opt}</span>
                               </div>
@@ -282,7 +299,7 @@ export default function ResultPage({ params }: { params: Promise<{ assignmentId:
 
           {/* End of Paper */}
           <div className="mt-12 pt-6 text-center">
-            <p className="text-sm font-bold text-gray-700">End of Question Paper</p>
+            <p className="text-sm font-bold text-black">End of Question Paper</p>
           </div>
 
         </div>
