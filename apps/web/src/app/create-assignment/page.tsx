@@ -127,65 +127,77 @@ export default function CreateAssignment() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep2()) return;
-    if (!token) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('subject', subject);
-      formData.append('grade', grade);
-      formData.append('dueDate', dueDate);
-      formData.append('difficultyMix', difficultyMix);
-      formData.append('additionalInstructions', additionalInstructions);
-      
-      const questionConfigurations = questionTypes.map(qt => ({
-        type: qt.type,
-        count: qt.count,
-        marks: qt.marks
-      }));
-      formData.append('questionConfigurations', JSON.stringify(questionConfigurations));
+  if (!validateStep2()) return;
+  if (!token) return;
 
-      if (file) {
-        formData.append('file', file);
-      }
+  setIsLoading(true);
+  setError(null);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/assignments`, {
+  try {
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('subject', subject);
+    formData.append('grade', grade);
+    formData.append('dueDate', dueDate);
+    formData.append('difficultyMix', difficultyMix);
+    formData.append('additionalInstructions', additionalInstructions);
+
+    const questionConfigurations = questionTypes.map(qt => ({
+      type: qt.type,
+      count: qt.count,
+      marks: qt.marks,
+    }));
+
+    formData.append(
+      'questionConfigurations',
+      JSON.stringify(questionConfigurations)
+    );
+
+    if (file) {
+      formData.append('file', file);
+    }
+
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+
+    const res = await fetch(`${API_URL}/assignments`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || 'Failed to create assignment');
+    }
+
+    const assignment = await res.json();
+
+    // IMPORTANT:
+    // If file exists, backend fileWorker will trigger generation after file processing.
+    // So frontend should NOT call /generate again.
+    if (!file) {
+      const genRes = await fetch(`${API_URL}/assignments/${assignment._id}/generate`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: formData
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to create assignment');
-      }
-
-      const assignment = await res.json();
-      
-      const genRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'}/assignments/${assignment._id}/generate`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
       });
 
       if (!genRes.ok) {
         throw new Error('Failed to start generation');
       }
-
-      router.push(`/generating/${assignment._id}`);
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    router.push(`/generating/${assignment._id}`);
+  } catch (err: any) {
+    setError(err.message || 'Something went wrong');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="max-w-4xl mx-auto px-8 py-6 pb-32 animate-fade-in">
