@@ -128,8 +128,11 @@ async function processGeneration(job: Job) {
 }
 
 export function initializeWorkers() {
-  const worker = new Worker('generationQueue', processGeneration, { connection: connection as any });
-  
+  // const worker = new Worker('generationQueue', processGeneration, { connection: connection as any });
+  const worker = new Worker('generationQueue', processGeneration, {
+  connection: connection as any,
+  concurrency: 1,
+});
   worker.on('completed', job => {
     console.log(`Job ${job.id} completed successfully`);
   });

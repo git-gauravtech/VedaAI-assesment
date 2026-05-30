@@ -17,6 +17,21 @@ connection.on('error', (err) => {
 
 export const fileProcessingQueue = new Queue('fileProcessingQueue', { connection: connection as any });
 
-export async function addFileProcessingJob(assignmentId: string, filePath: string, originalName: string, mimeType: string, size: number) {
-  await fileProcessingQueue.add('process-file', { assignmentId, filePath, originalName, mimeType, size });
+export async function addFileProcessingJob(
+  assignmentId: string,
+  filePath: string,
+  originalName: string,
+  mimeType: string,
+  size: number
+) {
+  await fileProcessingQueue.add(
+    'process-file',
+    { assignmentId, filePath, originalName, mimeType, size },
+    {
+      jobId: `file-${assignmentId}`,
+      removeOnComplete: true,
+      removeOnFail: true,
+      attempts: 1,
+    }
+  );
 }

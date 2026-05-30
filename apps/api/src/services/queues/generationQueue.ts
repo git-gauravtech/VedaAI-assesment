@@ -18,5 +18,14 @@ connection.on('error', (err) => {
 export const generationQueue = new Queue('generationQueue', { connection: connection as any });
 
 export async function addGenerationJob(assignmentId: string) {
-  await generationQueue.add('generate-paper', { assignmentId });
+  await generationQueue.add(
+    'generate-paper',
+    { assignmentId },
+    {
+      jobId: `generation-${assignmentId}`,
+      removeOnComplete: true,
+      removeOnFail: true,
+      attempts: 1,
+    }
+  );
 }

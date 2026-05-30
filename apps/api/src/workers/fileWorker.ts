@@ -98,8 +98,10 @@ async function processFile(job: Job) {
 }
 
 export function initializeFileWorker() {
-  const worker = new Worker('fileProcessingQueue', processFile, { connection: connection as any });
-  
+  const worker = new Worker('fileProcessingQueue', processFile, {
+  connection: connection as any,
+  concurrency: 1,
+});
   worker.on('completed', job => {
     console.log(`File Job ${job.id} completed successfully`);
   });
