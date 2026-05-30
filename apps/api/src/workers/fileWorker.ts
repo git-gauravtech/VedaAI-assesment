@@ -40,14 +40,25 @@ async function processFile(job: Job) {
     
     // 1. Extract Text
     if (mimeType === 'application/pdf') {
-      let pdfParse = require('pdf-parse');
-      if (typeof pdfParse !== 'function' && pdfParse && typeof pdfParse.default === 'function') {
-        pdfParse = pdfParse.default;
-      }
-      const dataBuffer = fs.readFileSync(filePath);
-      const data = await pdfParse(dataBuffer);
-      rawText = data.text;
-    } else if (mimeType === 'text/plain') {
+  const pdfParseModule = require('pdf-parse');
+
+  const pdfParse =
+    typeof pdfParseModule === 'function'
+      ? pdfParseModule
+      : typeof pdfParseModule.default === 'function'
+        ? pdfParseModule.default
+        : typeof pdfParseModule.pdfParse === 'function'
+          ? pdfParseModule.pdfParse
+          : null;
+
+  if (!pdfParse) {
+    console.log('pdf-parse module export:', pdfParseModule);
+    throw new Error('pdfParse function not found in pdf-parse module');
+  }
+  const dataBuffer = fs.readFileSync(filePath);
+  const data = await pdfParse(dataBuffer);
+  rawText = data.text || '';
+}else if (mimeType === 'text/plain') {
       rawText = fs.readFileSync(filePath, 'utf8');
     } else if (mimeType === 'image/jpeg' || mimeType === 'image/png') {
       const tesseractModule = require('tesseract.js');
